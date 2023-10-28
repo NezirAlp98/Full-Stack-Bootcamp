@@ -118,3 +118,163 @@ if (car.fiyat) {
 }
 
 delete car.brand
+
+let condition=4
+
+switch (condition) {   //switch case değişken olduğu zaman daha çok kullanılır. 
+    case 4:            //If else daha çok kompleks ifadelerin içerdiği koşullarda kullanılır.
+        
+        break;
+    case 2:
+        
+        break;
+
+    default:
+        break;
+}
+
+let obje={
+    boss:'Ali',
+    sales:'Veli',
+    area: 'Marmara'
+}
+
+const keys=Object.keys(obje) // []
+const values=Object.values(obje) // []
+let objeContent=Object.entries(obje) // [['boss','Ali']...] key ve value gösterir
+
+for (let i = 0; i < objeContent.length; i++) {
+    console.log(`iş tanımı ${objeContent[i][i]} ${objeContent[i][i]}`)
+    
+}
+
+const object2=Object.assign(obje)
+
+//object.freeze değişiklik yapılamaz,parametre değiştirilemez. object.seal metodunda dışarıdan parametre ekleyebiliriz.
+
+class employees{
+    constructor(name,surname,age){
+        this.name=name
+        this.surname=surname
+        this.age=age
+        this.firm='abc ltd şti'
+    }
+    set name (value){
+        this.name=value
+    }
+    get name() {
+        return this.name.toUpperCase()
+    }
+    fullName=function() {return `${this.name} ${this.surname}`}
+}
+
+employee1.name='yeni ad'
+const employee1=new employees('ali','yılmaz',34)
+employee1.fullName()
+
+class subClass extends employees{
+    constructor(area){
+        super() //ana class üzerinden özellikleri almak için super fonksiyonu kullanırız
+        this.area=area
+    }
+    title= () => `${this.name} ${this.surname} ${this.age} ${this.area}` 
+}
+
+//obje ile class farkı: objede hem anahtarı hem değeri girilir.Classlar ise başta verdiğimiz değişkenler ile obje oluşturulur.
+//senkron işlerin sırayla çalıştığı birbirini beklediği durum. Asenkron ise sırayla gerçekleşir fakat işlerin birbirini beklemediği durum.
+//javascript asenkron çalışır
+
+async function yaz(){
+    console.log('başla')
+    await setTimeout(() => console.log('orta'),2000)
+    console.log('bitir')
+}
+
+function printOrder(param){
+    console.log(param)
+}
+
+
+function printAll(){
+    printOrder("1", ()=>{
+        printOrder("2",()=>{
+            printOrder("3",()=>{ })
+        })
+    })
+}
+
+const printAll2=()=>{
+    printOrder("gelen veriyi oku")  // kısa
+        .then(()=>printOrder("veriyi update et")) // daha uzun sürüyor
+        .then(()=>printOrder("yeni veriyi döndür")) // kısa
+        .catch((err)=>console.log(err))
+}
+
+const satinAl= (musteri,urun)=>{
+    bakiyeKontrol(musteri)  // geriye true false değer döndürüyor
+        .then((uygunmu)=>{
+            if (uygunmu) {
+                stokKontrol(urun)
+                    .then((stokUygunluk)=>{ //callback metodları
+                        if (stokUygunluk) {  //buna iyi çalış!!!
+                            bakiyeDus()
+                                .then(()=>{
+                                    stokDusur()
+                                    basariMesaj()
+                                })
+                        }else{
+                            return 'stok bitti'
+                        }
+                    })
+            } else{
+                return 'yetersiz bakiye'
+            }
+        })
+        .catch((err)=>'hata' + err)
+}
+
+const yaz=(value)=>{
+    return new Promise((resolve,reject)=>{
+        if (value.length>=5) {
+            setTimeout(()=>{
+                console.log(value)
+                resolve()
+            },4000)
+        }else{
+            reject('koşul sağlanmadı yazı kısa' + value)
+        }
+    })
+}
+
+const hepsiniYazPromise1= ()=>{
+    yaz('serkan')
+        .then(()=>yaz('yetkin'))
+        .then(()=>yaz('mert'))
+        .then(()=>yaz('sabri'))
+        .catch((e)=>console.log(e))
+
+}
+
+const allP=Promise.all([hepsiniYazPromise1,hepsiniYazPromise2])
+const allSett=Promise.allSettled([hepsiniYazPromise1,hepsiniYazPromise2])
+
+allP
+    .then(()=>{ 
+        //her promise ve resolve oldu
+    })
+    .catch((e)=>console.log(e))
+    .finally(()=>{
+        //en sonda işlemin sonucunu görmemizi sağlar
+    })
+
+allSett
+    .then((res)=>{})
+
+//promise geriye değer döndürüp başarılı veya başarısız olduğunu belirtmesi en önemli özelliğidir.
+//promise callbackteki karışıklığı çözmek için kullanılır.
+
+async function bekleH(){
+    //asenkron çalışan promise ifadeleri senkron hale getirir
+    let res1=await hepsiniYazPromise1()
+    let res2=await hepsiniYazPromise2()
+}
