@@ -1,75 +1,117 @@
 <template>
   <v-container class="fill-height">
     <v-responsive class="align-center text-center fill-height">
-      <v-img height="300" src="@/assets/logo.svg" />
-
-      <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
-
-      <h1 class="text-h2 font-weight-bold">Vuetify</h1>
-
-      <div class="py-14" />
-
-      <v-row class="d-flex align-center justify-center">
-        <v-col cols="auto">
-          <v-btn
-            href="https://vuetifyjs.com/components/all/"
-            min-width="164"
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="text"
-          >
-            <v-icon
-              icon="mdi-view-dashboard"
-              size="large"
-              start
-            />
-
-            Components
-          </v-btn>
-        </v-col>
-
-        <v-col cols="auto">
-          <v-btn
-            color="primary"
-            href="https://vuetifyjs.com/introduction/why-vuetify/#feature-guides"
-            min-width="228"
-            rel="noopener noreferrer"
-            size="x-large"
-            target="_blank"
-            variant="flat"
-          >
-            <v-icon
-              icon="mdi-speedometer"
-              size="large"
-              start
-            />
-
-            Get Started
-          </v-btn>
-        </v-col>
-
-        <v-col cols="auto">
-          <v-btn
-            href="https://community.vuetifyjs.com/"
-            min-width="164"
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="text"
-          >
-            <v-icon
-              icon="mdi-account-group"
-              size="large"
-              start
-            />
-
-            Community
-          </v-btn>
-        </v-col>
+      <h2 class="mb-6">{{ title }}</h2>
+      <!-- <v-img height="300" src="@/assets/logo.svg" /> -->
+      <v-row class="ga-3">
+        <v-text-field v-model="newItem.name" label="name" />
+        <v-text-field v-model="newItem.calories" label="calories" />
+        <v-text-field v-model="newItem.fat" label="fat" />
       </v-row>
+
+      <v-row class="ga-3">
+        <v-text-field v-model="newItem.carbs" label="carbs" />
+        <v-text-field v-model="newItem.protein" label="protein" />
+        <v-text-field v-model="newItem.iron" label="iron" />
+      </v-row>
+      <div class="bg-yellow my-4" v-if="vegetables.length > 7">
+        yetersiz alan
+      </div>
+      <v-btn
+        class="w-100 my-12"
+        variant="elevated"
+        color="indigo-darken-3"
+        @click="addItem"
+        v-else-if="isNewItemAdd"
+        :disabled="addButtonDisableStatus"
+      >
+        {{ vegetables.length > 3 ? "3 ten fazla devam" : "az daha ekle" }}
+      </v-btn>
+
+      <div v-else class="bg-red my-4">yeni eleman eklemek için premium ol</div>
+      <div
+        class="d-flex flex-row justify-space-between"
+        v-for="(item, index) in vegetables"
+        :key="index"
+      >
+        <h4>{{ item.name }}</h4>
+        <div>{{ item.calories }}</div>
+        <div>{{ item.fat }}</div>
+        <div>{{ item.carbs }}</div>
+        <div>{{ item.protein }}</div>
+        <div>{{ item.iron }}</div>
+        <v-btn text @click="deleteItem(index)">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </div>
+      <v-alert v-if="showAlert" type="success" title="Dikkat" text="Artık ekleyemezsin" closable />
     </v-responsive>
   </v-container>
 </template>
 
-<script setup>
-  //
+<script>
+export default {
+  props: {
+    title: {
+      type: String,
+      default:'',
+    }
+  },
+  data() {
+    return {
+      vegetables: [
+        {
+          name: "Broccoli",
+          calories: 23,
+          fat: 0.4,
+          carbs: 3.6,
+          protein: 2.9,
+          iron: "154",
+        },
+        {
+          name: "Carrot",
+          calories: 49,
+          fat: 0.9,
+          carbs: 8.8,
+          protein: 4.3,
+          iron: "165",
+        },
+      ],
+      newItem: {
+        name: "",
+        calories: 0,
+        fat: 0,
+        carbs: 0,
+        protein: 0,
+        iron: "",
+      },
+      isNewItemAdd: true,
+    };
+  },
+  computed: {
+    addButtonDisableStatus() {
+      return this.vegetables.length > 5;
+    },
+    vegetablesLength() {
+      return this.vegetables.length;
+    }
+  },
+  methods: {
+    deleteItem(index) {
+      this.vegetables.splice(index, 1);
+    },
+    addItem() {
+      this.vegetables.push(this.newItem);
+      this.$emit("addItem",this.newItem);
+    },
+  },
+  watch: {
+    vegetablesLength(newVal,oldVal) {
+      if (newVal===6 && oldVal===5) {
+        this.showAlert = true
+        
+      }
+    }
+  }
+};
 </script>
